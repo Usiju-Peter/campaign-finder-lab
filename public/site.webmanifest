@@ -1,6 +1,6 @@
 {
-  "name": "campaignfinder",
-  "short_name": "campaignfinder",
+  "name": "campaignfinder lab",
+  "short_name": "campaignfinder lab",
   "description": "The best Content Rewards campaigns for your conditions, refreshed every 4 hours.",
   "start_url": "/",
   "display": "standalone",
