@@ -324,7 +324,7 @@
     td.name .m-plats { display: inline-flex; gap: 6px; margin-top: 4px; color: var(--text-3); }
     td.name .m-plats svg { width: 12px; height: 12px; fill: currentColor; }
     td.name .badge { margin-left: 4px; font-size: 10px; line-height: 16px; }
-    td.pays, th[data-k="platforms"], td.hide-m, th[data-k="paid"], th[data-k="age_days"] { display: none !important; }
+    td.pays, th[data-k="platforms"], td.hide-m, th[data-k="left"], th[data-k="age_days"] { display: none !important; }
     td .sub.m-only { display: block; }
     th[data-k="rate"], td[data-l="Pay / 1K"] { width: 58px; }
     th[data-k="budget"], td[data-l="Total budget"] { width: 84px; }
@@ -349,7 +349,7 @@
     th:first-child, td.rank, th[data-k="campaign"], td.name { scroll-snap-align: none !important; }
     th[data-k="platforms"] { scroll-snap-align: start; }
     table { table-layout: auto !important; min-width: 720px; }
-    td.pays, th[data-k="platforms"], td.hide-m, th[data-k="paid"], th[data-k="age_days"] { display: table-cell !important; }
+    td.pays, th[data-k="platforms"], td.hide-m, th[data-k="left"], th[data-k="age_days"] { display: table-cell !important; }
     td .sub.m-only { display: none !important; }
     td.name .m-plats { display: none !important; }
     th, td { padding: 11px 10px !important; scroll-snap-align: start; }
@@ -367,6 +367,7 @@
   .swipe-hint { display: none; padding: 8px 12px 0; color: var(--text-3); font-size: 12px; }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
   .lab-tag { margin-left: 6px; padding: 1px 6px; border: 1px solid var(--line-2); border-radius: 6px; font-size: 11px; font-weight: 500; color: var(--text-3); vertical-align: 2px; }
+  td.money { color: var(--money); }
 </style>
 </head>
 <body>
@@ -469,7 +470,7 @@
     minRate: { label: 'Pay per 1K', opts: [null, 1, 1.5, 2, 3], fmt: (v) => rateF.format(v) + '+', test: (r, v) => r.rate >= v && !r.per_post },
   };
   const COLS = [['rank', '#', 'l'], ['campaign', 'Campaign', 'l'], ['platforms', 'Pays on', 'l'], ['rate', 'Pay / 1K'], ['budget', 'Total budget'],
-    ['paid', 'Paid out'], ['creators', 'Creators'], ['age_days', 'Age']];
+    ['left', 'Money left'], ['creators', 'Creators'], ['age_days', 'Age']];
   const SORTS = [['left_per_creator:desc', 'Best value'], ['left:desc', 'Most money left'], ['budget:desc', 'Biggest budget'], ['paid:desc', 'Paid out most'], ['creators:asc', 'Fewest creators'], ['rate:desc', 'Highest pay per 1K'],
     ['max_payout:desc', 'Highest max per clip'], ['age_days:asc', 'Newest'], ['spent_per_day:desc', 'Paying out fastest']];
   const DEF = { q: '', types: [], plats: [], cats: [], minLeft: 1500, maxCr: null, minRate: null, sort: [['left_per_creator', 'desc']], page: 1, size: 25,
@@ -696,8 +697,8 @@
       tb.append(el('tr', {}, el('td', { class: 'rank', text: String(start + i + 1) }), name,
         el('td', { class: 'l pays', 'data-l': 'Pays on' }, r.platforms ? pl : el('span', { class: 'muted', text: '—' })),
         n('rate', r.per_post ? 'Per post' : rateF.format(r.rate), 'Pay / 1K'),
-        (() => { const c = n('budget', money.format(r.budget), 'Total budget'); c.append(el('span', { class: 'sub m-only', text: `${money.format(r.paid)} paid` })); return c; })(),
-        (() => { const c = n('paid', money.format(r.paid), 'Paid out', 'hide-m'); const pct = r.budget ? Math.round(100 * r.paid / r.budget) : 0; c.append(el('span', { class: 'sub', text: `${pct}% of budget` })); return c; })(),
+        (() => { const c = n('budget', money.format(r.budget), 'Total budget'); c.append(el('span', { class: 'sub m-only', text: `${money.format(r.left)} left` })); return c; })(),
+        (() => { const c = n('left', money.format(r.left), 'Money left', 'hide-m money'); const pct = r.budget ? Math.round(100 * r.left / r.budget) : 0; c.append(el('span', { class: 'sub', text: `${pct}% left` })); return c; })(),
         n('creators', intF.format(r.creators), 'Creators'), n('age_days', ageText(r), 'Age', 'hide-m')));
     });
     $('range').textContent = list.length ? `Results ${intF.format(start + 1)}–${intF.format(start + view.length)} of ${intF.format(list.length)}` : 'No results';
